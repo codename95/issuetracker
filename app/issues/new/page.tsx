@@ -2,10 +2,11 @@
 
 import SimpleMDE from "react-simplemde-editor";
 import "easymde/dist/easymde.min.css";
-import { TextField, Button } from "@radix-ui/themes";
+import { TextField, Button, Callout } from "@radix-ui/themes";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface IssueForm {
   title: string;
@@ -14,30 +15,42 @@ interface IssueForm {
 const NewIssuePage = () => {
   const router = useRouter();
   const { register, control, handleSubmit } = useForm<IssueForm>();
+  const [error, setError] = useState("");
   return (
-    <form
-      className="max-w-xl space-y-3"
-      onSubmit={handleSubmit(async (data) => {
-        await axios.post("/api/issues", data);
-        router.push("/issues");
-      })}
-    >
-      <TextField.Root>
-        <TextField.Input
-          placeholder="Enter Title of Issue…"
-          {...register("title")}
+    <div className="max-w-xl">
+      {error && (
+        <Callout.Root color="red" className="mb-5">
+          <Callout.Text>{error}</Callout.Text>
+        </Callout.Root>
+      )}
+      <form
+        className="space-y-3"
+        onSubmit={handleSubmit(async (data) => {
+          try {
+            await axios.post("/api/issues", data);
+            router.push("/issues");
+          } catch (error) {
+            setError("An unexpected error occured");
+          }
+        })}
+      >
+        <TextField.Root>
+          <TextField.Input
+            placeholder="Enter Title of Issue…"
+            {...register("title")}
+          />
+        </TextField.Root>
+        <Controller
+          name="description"
+          control={control}
+          render={({ field }) => (
+            <SimpleMDE placeholder="Issue Description" {...field} />
+          )}
         />
-      </TextField.Root>
-      <Controller
-        name="description"
-        control={control}
-        render={({ field }) => (
-          <SimpleMDE placeholder="Issue Description" {...field} />
-        )}
-      />
 
-      <Button>Submit New Issue</Button>
-    </form>
+        <Button>Submit New Issue</Button>
+      </form>{" "}
+    </div>
   );
 };
 
