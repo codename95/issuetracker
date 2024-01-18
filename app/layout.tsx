@@ -30,10 +30,11 @@ export default function RootLayout({
           radius="none"
           scaling="110%"
         >
-          <NavBar />
-          <main className="p-5">
-            <Container>{children}</Container>
-          </main>
+          {" "}
+          <Container>
+            <NavBar />
+            <main className="p-5">{children}</main>
+          </Container>
         </Theme>
       </body>
     </html>
