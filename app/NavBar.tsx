@@ -53,7 +53,7 @@ const NavBar = () => {
                   radius="full"
                   className="cursor-pointer"
                   src={session.user!.image!}
-                  fallback="?"
+                  fallback="?" referrerPolicy="no-referrer"
                 />
               </DropdownMenu.Trigger>
               <DropdownMenu.Content>
